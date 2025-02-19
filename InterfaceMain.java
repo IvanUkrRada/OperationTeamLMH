@@ -1,4 +1,4 @@
-public class InterfaceMarketing {
+public class InterfaceMain {
     public interface VenueManagement {
         /*inorder to get/set data with/for specific space there are a list of names for each of them
         provided bellow:
