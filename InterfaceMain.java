@@ -13,37 +13,36 @@ public class InterfaceMain {
         void updateCalendar(String spaceName, String eventName, String date,  String startTime, String endTime);
         //this is main method to interact with the calendar which allows to set te relevant details in calendar
         // first Name of the space, Name of the Event (depends on what will occur : tour, show, film), date and time.
+        //We offer reduced price tickets to the students studying theatre or film and the staff of these
+        //institutions.
         boolean isVenueAvailable(String spaceName, String date, String startTime, String endTime);
         //to check if the venue/room available during that time period
-        void reserveSpace(String spaceName, String date, String startTime, String endTime);
-        //..
         void releaseSpace(String spaceName, String date,  String startTime, String endTime);
-        //
-        // ?void markSetupDays(String eventName, String setupDate);
-
-        // Venue Capacities & Restrictions
+        //if the booking is cancelled
+        void setupDay(String eventName, String date, String startTime, String endTime );
 
 
         int getMaxOccupancy(String spaceName);
         // This method allow you to get the number of seats/occupancy available for each space.
         int getSeatsLeft(int spaceName, String date,  String startTime, String endTime);
         //To check the amount of seats on the specific date
-        boolean isAccessible(String spaceName);
-        boolean hasRestrictedViewSeats(String spaceName);
+
 
         // Ticket Sales & Performance Tracking
         int getTotalTicketsSoldPerEvent(String eventName);
-        //we get information about tickets sales from event/ if the event is not film it returns the amount
+        //we get information about tickets sales from event/ we get data about tickets from Box Office
+        //If the space in not booked and the revenue is produced of the ticket sales
         double getEventRevenue(String eventName);
-        //
+        //to get the total revenue of specific event
         double getClientRevenueShare(String eventName);
-        //de
+        //As part of the agreement with the client, none, part or all of the ticket sales
+        //revenue is payable to the client (and is thus offset against their bill)
 
         // Space & Booking Information
         void setRoomSetup(String spaceName, String setupType);
-        void getCalendar(String startDate, String endDate);
-        void releaseHeldSeat(String seatId);
+        // basic information about necessities for booked space
         String getAnnualBookingHistory(int year);
+        //Annual booking history
 
         // Customer Reviews
 
