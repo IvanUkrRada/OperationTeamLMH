@@ -24,7 +24,7 @@ public class InterfaceMain {
 
         int getMaxOccupancy(String spaceName);
         // This method allow you to get the number of seats/occupancy available for each space.
-        int getSeatsLeft(int spaceName, String date,  String startTime, String endTime);
+        int getSeatsLeft(String spaceName, String date,  String startTime, String endTime);
         //To check the amount of seats on the specific date
 
 
