@@ -27,13 +27,13 @@ public class InterfaceMain {
         int getMaxOccupancy(String spaceName);
         // This method allow you to get the number of seats/occupancy available for each space.
         int getSeatsLeft(int spaceName, String date,  String startTime, String endTime);
-        //T
+        //To check the amount of seats on the specific date
         boolean isAccessible(String spaceName);
         boolean hasRestrictedViewSeats(String spaceName);
 
         // Ticket Sales & Performance Tracking
-        int getTotalTicketsSold(String event);
-        //we get information about tickets sales from the
+        int getTotalTicketsSoldPerEvent(String eventName);
+        //we get information about tickets sales from event/ if the event is not film it returns the amount
         double getEventRevenue(String eventName);
         //
         double getClientRevenueShare(String eventName);
