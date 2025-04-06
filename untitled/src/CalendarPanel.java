@@ -378,7 +378,7 @@ public class CalendarPanel extends JPanel {
         switch (timeSlot) {
             case "Morning (10:00-13:00):":
             case "Afternoon (13:00-17:00)":
-                return venue.getRate("hourly") * 3; // 3 hours
+                return venue.getRate("hourly") * 3;
             case "Evening (17:00-00:00)":
                 return isWeekend ? venue.getRate("evening_weekend") : venue.getRate("evening_weekday");
             case "Full Day (10:00-00:00)":

@@ -15,7 +15,7 @@ public class BookingsPanel extends JPanel {
     private CalendarPanel calendarPanel;
     private JTable bookingsTable;
     private BookingsTableModel tableModel;
-    private JButton addButton, editButton, deleteButton;
+    private JButton addButton, deleteButton;
 
     public BookingsPanel(MainFrame parent, CalendarPanel calendarPanel) {
         this.parentFrame = parent;
