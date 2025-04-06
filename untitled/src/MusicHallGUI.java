@@ -8,6 +8,11 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+// SQL Imports
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+
 
 public class MusicHallGUI {
     public static void main(String[] args) {
@@ -76,7 +81,7 @@ class MainFrame extends JFrame {
         navPanel.setLayout(new GridLayout(6, 1, 0, 10));
         navPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         navPanel.setPreferredSize(new Dimension(150, 0));
-        ImageIcon calendarIcon = new ImageIcon("imageCalendar2.png");
+        ImageIcon calendarIcon = new ImageIcon("untitled/ imageCalendar2.png");
         Image img = calendarIcon.getImage();
         Image newImg = img.getScaledInstance(80, 80, Image.SCALE_SMOOTH); // Resize
         calendarIcon = new ImageIcon(newImg);
