@@ -32,6 +32,23 @@ class MainFrame extends JFrame {
     private JLabel statusLabel;
 
     public MainFrame() {
+        //testing the database connection
+        try {
+            DatabaseManagment dbManager = DatabaseManagment.getInstance();
+            if (dbManager.getConnection() != null) {
+                System.out.println("Database connected successfully");
+            } else {
+                JOptionPane.showMessageDialog(this,
+                        "Warning: Could not connect to database. Some features may be limited.",
+                        "Database Connection Error", JOptionPane.WARNING_MESSAGE);
+            }
+        } catch (Exception e) {
+            System.err.println("Database connection error: " + e.getMessage());
+            JOptionPane.showMessageDialog(this,
+                    "Warning: Could not connect to database. Some features may be limited.",
+                    "Database Connection Error", JOptionPane.WARNING_MESSAGE);
+        }
+
         setTitle("Music Hall Management System");
         setSize(1000, 700);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

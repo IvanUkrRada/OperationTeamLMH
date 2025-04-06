@@ -5,19 +5,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ede46c84-73b4-4047-8fbc-abe0932d33a2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/untitled/src/DatabaseManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/BookingEntry.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/BookingEntry.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/BookingsTableModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/BookingsTableModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseConnectionTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseConnectionTest.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManager.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/MainFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/MainFrame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/MusicHallGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/MusicHallGUI.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/VenueSpace.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/VenueSpace.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseConnectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseConnectionTest.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -52,7 +51,7 @@
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "main",
+    "git-widget-placeholder": "Database-Test01",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/miche/OneDrive - City, University of London/.Year 2/IN2033 Team Project/GitRepo/JDBC/mysql-connector-j-9.2.0.jar",
     "node.js.detected.package.eslint": "true",
@@ -60,7 +59,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Global Libraries",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.2",
     "settings.editor.selected.configurable": "terminal",
@@ -83,7 +82,7 @@
       <workItem from="1743959331314" duration="516000" />
       <workItem from="1743959857056" duration="463000" />
       <workItem from="1743960895413" duration="2400000" />
-      <workItem from="1743964473255" duration="11487000" />
+      <workItem from="1743964473255" duration="15146000" />
     </task>
     <servers />
   </component>

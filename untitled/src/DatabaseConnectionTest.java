@@ -30,7 +30,7 @@ public class DatabaseConnectionTest {
 
         // This is a reflection hack to get the private DB_URL field from DatabaseManager
         try {
-            java.lang.reflect.Field urlField = DatabaseManager.class.getDeclaredField("DB_URL");
+            java.lang.reflect.Field urlField = DatabaseManagment.class.getDeclaredField("DB_URL");
             urlField.setAccessible(true);
             String dbUrl = (String) urlField.get(null);
 
@@ -54,7 +54,7 @@ public class DatabaseConnectionTest {
         Connection connection = null;
 
         try {
-            DatabaseManager dbManager = DatabaseManager.getInstance();
+            DatabaseManagment dbManager = DatabaseManagment.getInstance();
             connection = dbManager.getConnection();
 
             if (connection != null) {
@@ -87,7 +87,7 @@ public class DatabaseConnectionTest {
         } finally {
             if (connection != null) {
                 try {
-                    DatabaseManager.getInstance().closeConnection(connection);
+                    DatabaseManagment.getInstance().closeConnection();
                     System.out.println("\nConnection closed successfully.");
                 } catch (Exception e) {
                     System.out.println("Error closing connection: " + e.getMessage());

@@ -165,9 +165,32 @@ public class CalendarPanel extends JPanel {
         venueSpaces.add(chekhovChamber);
     }
     public void refresh() {
+        // Load bookings from the database - Tolu (line 169)
+        loadBookingsFromDatabase();
+
         updateCalendarView();
         parentFrame.setStatus("Calendar updated");
     }
+
+    //Tolu - Line 176 to 193
+private void loadBookingsFromDatabase() {
+    try {
+        DatabaseManagment dbManager = DatabaseManagment.getInstance();
+        ArrayList<BookingEntry> dbBookings = dbManager.getAllBookings();
+
+        // Clear current bookings first
+        bookings.clear();
+
+        // Add all bookings from database
+        for (BookingEntry booking : dbBookings) {
+            addBooking(booking);
+        }
+
+    } catch (Exception e) {
+        System.err.println("Error loading bookings from database: " + e.getMessage());
+        e.printStackTrace();
+    }
+}
 
     private void updateCalendarView() {
         calendarView.removeAll();
