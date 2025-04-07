@@ -27,6 +27,7 @@ class MainFrame extends JFrame {
     private JPanel contentPanel;
     private CalendarPanel calendarPanel;
     private BookingsPanel bookingsPanel;
+    private ClientPanel clientsPanel;
     private ReviewPanel reviewPanel;
     private FinancePanel financePanel;
     private JLabel statusLabel;
@@ -72,11 +73,13 @@ class MainFrame extends JFrame {
         // Initialize panels
         calendarPanel = new CalendarPanel(this);
         bookingsPanel = new BookingsPanel(this, calendarPanel);
+        clientsPanel = new ClientPanel(this);
         reviewPanel = new ReviewPanel(this, calendarPanel);
         financePanel = new FinancePanel(this, calendarPanel);
 
         contentPanel.add(calendarPanel, "Calendar");
         contentPanel.add(bookingsPanel, "Bookings");
+        contentPanel.add (clientsPanel, "Clients");
         contentPanel.add(reviewPanel, "Review");
         contentPanel.add(financePanel, "Finance");
 
@@ -95,10 +98,10 @@ class MainFrame extends JFrame {
 
     private JPanel createNavigationPanel() {
         JPanel navPanel = new JPanel();
-        navPanel.setLayout(new GridLayout(6, 1, 0, 10));
+        navPanel.setLayout(new GridLayout(7, 1, 0, 10));
         navPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         navPanel.setPreferredSize(new Dimension(150, 0));
-        ImageIcon calendarIcon = new ImageIcon("untitled/ imageCalendar2.png");
+        ImageIcon calendarIcon = new ImageIcon("untitled/imageCalendar2.png");
         Image img = calendarIcon.getImage();
         Image newImg = img.getScaledInstance(80, 80, Image.SCALE_SMOOTH); // Resize
         calendarIcon = new ImageIcon(newImg);
@@ -108,6 +111,7 @@ class MainFrame extends JFrame {
         calendarButton.setFocusPainted(false);
         calendarButton.setOpaque(false);
         JButton bookingsButton = createNavButton("Bookings");
+        JButton clientsButton = createNavButton("Clients");
         JButton reviewButton = createNavButton("Reviews");
         JButton financeButton = createNavButton("Finance");
         JButton helpButton = createNavButton("Help");
@@ -115,6 +119,7 @@ class MainFrame extends JFrame {
 
         navPanel.add(calendarButton);
         navPanel.add(bookingsButton);
+        navPanel.add (clientsButton);
         navPanel.add(reviewButton);
         navPanel.add(financeButton);
         navPanel.add(helpButton);
@@ -123,6 +128,7 @@ class MainFrame extends JFrame {
         // TO SWITCH BETWEEN PANELS
         calendarButton.addActionListener(e -> cardLayout.show(contentPanel, "Calendar"));
         bookingsButton.addActionListener(e -> cardLayout.show(contentPanel, "Bookings"));
+        clientsButton.addActionListener(e -> cardLayout.show(contentPanel, "Clients"));
         reviewButton.addActionListener(e -> cardLayout.show(contentPanel, "Review"));
         financeButton.addActionListener(e -> cardLayout.show(contentPanel, "Finance"));
         helpButton.addActionListener(e -> showHelp());
@@ -163,6 +169,7 @@ class MainFrame extends JFrame {
     public void refreshAllPanels() {
         calendarPanel.refresh();
         bookingsPanel.refresh();
+        clientsPanel.refresh ();
         reviewPanel.refresh();
         financePanel.refresh();
     }
@@ -369,13 +376,20 @@ class BookingsTableModel extends AbstractTableModel {
         BookingEntry booking = bookings.get(rowIndex);
 
         switch (columnIndex) {
-            case 0: return booking.getDate();
-            case 1: return booking.getVenueSpace();
-            case 2: return booking.getTimeSlot();
-            case 3: return booking.getClient();
-            case 4: return String.format("£%.2f", booking.getCost());
-            case 5: return booking.isConfirmed();
-            default: return null;
+            case 0:
+                return booking.getDate();
+            case 1:
+                return booking.getVenueSpace();
+            case 2:
+                return booking.getTimeSlot();
+            case 3:
+                return booking.getClient();
+            case 4:
+                return String.format("£%.2f", booking.getCost());
+            case 5:
+                return booking.isConfirmed();
+            default:
+                return null;
         }
     }
 
@@ -385,6 +399,140 @@ class BookingsTableModel extends AbstractTableModel {
             return Boolean.class;
         }
         return String.class;
+    }
+}
+
+class ClientTableModel extends AbstractTableModel {
+
+    private final String[] columnNames = {"ClientID" ,"Company_Name", "Contact_Name", "Contact_Email", "Phone_Number", "Street_Address", "City", "Postcode", "Billing_Name", "Billing_Email"};
+    private ArrayList<ClientEntry> clients;
+    ClientTableModel (ArrayList<ClientEntry> clients){
+        this.clients = clients;
+    }
+
+    public void addClient (String clientID, String companyName, String contactName, String contactEmail, String phoneNumber, String streetAddress, String city, String postcode, String billingName, String billingEmail){
+        ClientEntry newEntry = new ClientEntry( clientID,  companyName,  contactName,  contactEmail,  phoneNumber,  streetAddress,  city,  postcode,  billingName,  billingEmail);
+        clients.add (newEntry);
+        fireTableDataChanged();
+    }
+
+    public int getRowCount() {
+        return clients.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return columnNames[column];
+    }
+
+    public int getNumberClients ()
+    {
+        return clients.size();
+    }
+
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        if (rowIndex >= clients.size()) {
+            return null;
+        }
+
+        ClientEntry client = clients.get(rowIndex);
+
+        return switch (columnIndex) {
+            case 0 -> client.getClientID();
+            case 1 -> client.getCompanyName();
+            case 2 -> client.getContactName();
+            case 3 -> client.getContactEmail();
+            case 4 -> client.getPhoneNumber ();
+            case 5 -> client.getStreetAddress ();
+            case 6 -> client.getCity ();
+            case 7 -> client.getPostcode ();
+            case 8 -> client.getBillingName ();
+            case 9 -> client.getBillingEmail ();
+            default -> null;
+        };
+    }
+
+    public Class<?> getColumnClass(int columnIndex) {
+        return String.class;
+    }
+}
+
+class ClientEntry {
+
+    private String clientID;
+    private String companyName;
+    private String contactName;
+    private String contactEmail;
+    private String phoneNumber;
+    private String streetAddress;
+    private String city;
+    private String postcode;
+    private String billingName;
+    private String billingEmail;
+
+    ClientEntry(String clientID, String companyName, String contactName, String contactEmail, String phoneNumber, String streetAddress, String city, String postcode, String billingName, String billingEmail) {
+        this.clientID = clientID;
+        this.companyName = companyName;
+        this.contactName = contactName;
+        this.contactEmail = contactEmail;
+        this.phoneNumber = phoneNumber;
+        this.streetAddress = streetAddress;
+        this.city = city;
+        this.postcode = postcode;
+        this.billingName = billingName;
+        this.billingEmail = billingEmail;
+    }
+
+    public String getClientID() {
+        return clientID;
+    }
+
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public String getContactName() {
+        return contactName;
+    }
+
+    public String getContactEmail() {
+        return contactEmail;
+    }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getStreetAddress() {
+        return streetAddress;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public String getPostcode() {
+        return postcode;
+    }
+
+    public String getBillingName() {
+        return billingName;
+    }
+
+    public String getBillingEmail() {
+        return billingEmail;
+    }
+
+    @Override
+    public String toString() {
+        return "ClientID: " + clientID + " | Company: " + companyName + " | Contact: " + contactName +
+                " | Email: " + contactEmail + " | Phone: " + phoneNumber + " | Address: " + streetAddress +
+                ", " + city + " " + postcode + " | Billing Name: " + billingName + " | Billing Email: " + billingEmail;
     }
 }
 
