@@ -17,6 +17,7 @@ public class CalendarPanel extends JPanel {
     private int currentMonth, currentYear;
     private Map<String, ArrayList<BookingEntry>> bookings;
     private ArrayList<VenueSpace> venueSpaces;
+    private ArrayList<BookingEntry> tempBookings = new ArrayList<>(); //Added by Tolu
 
     public CalendarPanel(MainFrame parent) {
         this.parentFrame = parent;
@@ -172,26 +173,43 @@ public class CalendarPanel extends JPanel {
         parentFrame.setStatus("Calendar updated");
     }
 
-    //Tolu - Line 176 to 193
-private void loadBookingsFromDatabase() {
-    try {
-        DatabaseManagment dbManager = DatabaseManagment.getInstance();
-        ArrayList<BookingEntry> dbBookings = dbManager.getAllBookings();
-
-        // Clear current bookings first
-        bookings.clear();
-
-        // Add all bookings from database
-        for (BookingEntry booking : dbBookings) {
-            addBooking(booking);
+    /**
+     * added methods: addBookingFromDatabase() and loadBookingsFromDatabase()
+      * @param booking
+     */
+    private void addBookingFromDatabase(BookingEntry booking) {
+        // Add only to local collection, don't save to database since it came from there
+        String date = booking.getDate();
+        if (!bookings.containsKey(date)) {
+            bookings.put(date, new ArrayList<>());
         }
-
-    } catch (Exception e) {
-        System.err.println("Error loading bookings from database: " + e.getMessage());
-        e.printStackTrace();
+        bookings.get(date).add(booking);
     }
-}
 
+    //Tolu - Added loadBookingFromDatabase()
+    private void loadBookingsFromDatabase() {
+        try {
+            DatabaseManagment dbManager = DatabaseManagment.getInstance();
+            ArrayList<BookingEntry> dbBookings = dbManager.getAllBookings();
+
+            // Clear current bookings first
+            bookings.clear();
+
+            // Add all bookings from database directly to local collection
+            for (BookingEntry booking : dbBookings) {
+                // Add directly to local collection instead of using addBooking()
+                String date = booking.getDate();
+                if (!bookings.containsKey(date)) {
+                    bookings.put(date, new ArrayList<>());
+                }
+                bookings.get(date).add(booking);
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error loading bookings from database: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
     private void updateCalendarView() {
         calendarView.removeAll();
 
@@ -411,12 +429,35 @@ private void loadBookingsFromDatabase() {
         }
     }
 
+    //addBookings updated - Tolu
     public void addBooking(BookingEntry booking) {
-        String date = booking.getDate();
-        if (!bookings.containsKey(date)) {
-            bookings.put(date, new ArrayList<>());
+        // Try to save to database first
+        try {
+            DatabaseManagment dbManager = DatabaseManagment.getInstance();
+            boolean success = dbManager.addBooking(booking);
+            if (success) {
+                // Now add to local collection
+                String date = booking.getDate();
+                if (!bookings.containsKey(date)) {
+                    bookings.put(date, new ArrayList<>());
+                }
+                bookings.get(date).add(booking);
+                parentFrame.setStatus("Booking added to database");
+            } else {
+                parentFrame.setStatus("Failed to add booking to database");
+            }
+        } catch (Exception e) {
+            System.err.println("Error saving booking to database: " + e.getMessage());
+            e.printStackTrace();
+
+            // add to local collection incase DB fails
+            String date = booking.getDate();
+            if (!bookings.containsKey(date)) {
+                bookings.put(date, new ArrayList<>());
+            }
+            bookings.get(date).add(booking);
+            parentFrame.setStatus("Booking added locally only - database error");
         }
-        bookings.get(date).add(booking);
     }
 
     public ArrayList<BookingEntry> getAllBookings() {
@@ -442,7 +483,25 @@ private void loadBookingsFromDatabase() {
     public ArrayList<VenueSpace> getVenueSpaces() {
         return venueSpaces;
     }
+    //updated removeBooking - Tolu
     public void removeBooking(BookingEntry booking) {
+        // attempt to delete from database first if it has an ID
+        if (booking.getBookingId() > 0) {
+            try {
+                DatabaseManagment dbManager = DatabaseManagment.getInstance();
+                boolean success = dbManager.removeBooking(booking.getBookingId());
+                if (success) {
+                    parentFrame.setStatus("Booking deleted from database");
+                } else {
+                    parentFrame.setStatus("Failed to delete booking from database");
+                }
+            } catch (Exception e) {
+                System.err.println("Error deleting booking from database: " + e.getMessage());
+                e.printStackTrace();
+            }
+        }
+
+        // always removes from local collection
         String date = booking.getDate();
         if (bookings.containsKey(date)) {
             bookings.get(date).remove(booking);

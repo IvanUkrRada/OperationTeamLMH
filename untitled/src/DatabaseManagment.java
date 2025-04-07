@@ -666,6 +666,106 @@ public class DatabaseManagment {
 //    }
 
 
+    public ArrayList<ReviewPanel.Review> getAllReviews() {
+        ArrayList<ReviewPanel.Review> reviews = new ArrayList<>();
+
+        try {
+            String query = "SELECT r.Review_ID, r.Client_ID, c.Company_Name, r.Rating, " +
+                    "FROM Reviews r " +
+                    "JOIN Clients c ON r.Client_ID = c.ClientID " +
+                    "ORDER BY r.Date DESC";
+
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(query)) {
+
+                while (rs.next()) {
+                    int reviewId = rs.getInt("Review_ID");
+                    int clientId = rs.getInt("Client_ID");
+                    String clientName = rs.getString("Company_Name");
+                    int rating = rs.getInt("Rating");
+                    String comments = rs.getString("Comments");
+                    String date = rs.getString("Date");
+                    String type = rs.getString("Type");
+
+                    ReviewPanel.Review review = new ReviewPanel.Review(reviewId, clientId, clientName,
+                            rating, comments, date, type);
+                    reviews.add(review);
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching reviews: " + e.getMessage(), e);
+            displayError("Database Error", "Failed to fetch reviews: " + e.getMessage());
+        }
+
+        return reviews;
+    }
+
+    // Add methods to get filtered reviews
+    public ArrayList<ReviewPanel.Review> getVenueReviews() {
+        return getReviewsByType("venue");
+    }
+
+    public ArrayList<ReviewPanel.Review> getRoomReviews() {
+        return getReviewsByType("room");
+    }
+
+    public ArrayList<ReviewPanel.Review> getShowReviews() {
+        return getReviewsByType("show");
+    }
+
+    public ArrayList<ReviewPanel.Review> getRecentReviews(int days) {
+        ArrayList<ReviewPanel.Review> reviews = new ArrayList<>();
+
+        try {
+            String query = "SELECT r.Review_ID, r.Client_ID, c.Company_Name, r.Rating, " +
+                    "FROM Reviews r " +
+                    "JOIN Clients c ON r.Client_ID = c.ClientID " +
+                    "ORDER BY r.Review_ID DESC";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                pstmt.setInt(1, days);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        // Same code as in getAllReviews to create Review objects
+                        // ...
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching recent reviews: " + e.getMessage(), e);
+        }
+
+        return reviews;
+    }
+
+    private ArrayList<ReviewPanel.Review> getReviewsByType(String type) {
+        ArrayList<ReviewPanel.Review> reviews = new ArrayList<>();
+
+        try {
+            String query =
+                    "SELECT r.Review_ID, r.Client_ID, c.Company_Name, r.Rating, " +
+                    "FROM Reviews r " +
+                    "JOIN Clients c ON r.Client_ID = c.ClientID " +
+                    "ORDER BY r.Review_ID DESC";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+                pstmt.setString(1, type);
+
+                try (ResultSet rs = pstmt.executeQuery()) {
+                    while (rs.next()) {
+                        // Same code as in getAllReviews to create Review objects
+                        // ...
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching reviews by type: " + e.getMessage(), e);
+        }
+
+        return reviews;
+    }
+
     /**
      * Checks if a venue is available for the given date and time
      * @param roomId ID of the room
