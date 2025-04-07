@@ -5,10 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ede46c84-73b4-4047-8fbc-abe0932d33a2" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManagment.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManagment.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/ClientPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/ClientPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/untitled/src/SeatingPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -34,27 +33,27 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.MusicHallGUI.executor": "Run",
-    "RunOnceActivity.OpenProjectViewOnStart": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "WebServerToolWindowFactoryState": "false",
-    "git-widget-placeholder": "Database-Test01",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Cloud Strife/Documents/GitHub/TeamProject/OperationTeamLMH/mysql-connector-j-9.2.0.jar",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.2",
-    "settings.editor.selected.configurable": "terminal",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.MusicHallGUI.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Database-Test01&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Cloud Strife/Documents/GitHub/TeamProject/OperationTeamLMH/mysql-connector-j-9.2.0.jar&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager">
     <configuration name="MusicHallGUI" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="untitled.src.MusicHallGUI" />
@@ -95,6 +94,7 @@
       <workItem from="1744043207003" duration="266000" />
       <workItem from="1744043478832" duration="137000" />
       <workItem from="1744043621386" duration="6050000" />
+      <workItem from="1744050590937" duration="398000" />
     </task>
     <servers />
   </component>

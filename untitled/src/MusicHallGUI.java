@@ -23,6 +23,7 @@ public class MusicHallGUI {
 }
 
 class MainFrame extends JFrame {
+    private SeatingPanel seatingPanel;
     private CardLayout cardLayout;
     private JPanel contentPanel;
     private CalendarPanel calendarPanel;
@@ -76,7 +77,9 @@ class MainFrame extends JFrame {
         clientsPanel = new ClientPanel(this);
         reviewPanel = new ReviewPanel(this, calendarPanel);
         financePanel = new FinancePanel(this, calendarPanel);
+        seatingPanel = new SeatingPanel(this, calendarPanel);
 
+        contentPanel.add(seatingPanel, "Seating");
         contentPanel.add(calendarPanel, "Calendar");
         contentPanel.add(bookingsPanel, "Bookings");
         contentPanel.add (clientsPanel, "Clients");
@@ -116,6 +119,8 @@ class MainFrame extends JFrame {
         JButton financeButton = createNavButton("Finance");
         JButton helpButton = createNavButton("Help");
         JButton exitButton = createNavButton("Exit");
+        JButton seatingButton = createNavButton("Seating");
+        navPanel.add(seatingButton);
 
         navPanel.add(calendarButton);
         navPanel.add(bookingsButton);
@@ -130,6 +135,7 @@ class MainFrame extends JFrame {
         bookingsButton.addActionListener(e -> cardLayout.show(contentPanel, "Bookings"));
         clientsButton.addActionListener(e -> cardLayout.show(contentPanel, "Clients"));
         reviewButton.addActionListener(e -> cardLayout.show(contentPanel, "Review"));
+        seatingButton.addActionListener(e -> cardLayout.show(contentPanel, "Seating"));
         financeButton.addActionListener(e -> cardLayout.show(contentPanel, "Finance"));
         helpButton.addActionListener(e -> showHelp());
         exitButton.addActionListener(e -> confirmExit());
@@ -169,9 +175,12 @@ class MainFrame extends JFrame {
     public void refreshAllPanels() {
         calendarPanel.refresh();
         bookingsPanel.refresh();
-        clientsPanel.refresh ();
         reviewPanel.refresh();
         financePanel.refresh();
+        seatingPanel.refresh();
+    }
+    public CalendarPanel getCalendarPanel() {
+        return calendarPanel;
     }
 }
 class VenueSpace {
