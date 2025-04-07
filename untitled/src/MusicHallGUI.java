@@ -254,6 +254,21 @@ class VenueSpace {
         private boolean confirmed;
         private String configuration; // For rooms: "classroom", "boardroom", "presentation" (Capacity)
 
+        //Tolu - start
+        private int bookingId = -1;  // -1 means not saved to database yet
+
+        public int getBookingId() {
+            return bookingId;
+        }
+
+        public void setBookingId(int bookingId) {
+            this.bookingId = bookingId;
+        }
+
+        public String getVenueType() {
+            return venueType;
+        }
+        //Tolu - end
         public BookingEntry(String date, String venueSpace, String venueType, String timeSlot,
                             String client, String description, double cost) {
             this.date = date;

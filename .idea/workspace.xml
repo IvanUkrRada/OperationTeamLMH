@@ -6,17 +6,10 @@
   <component name="ChangeListManager">
     <list default="true" id="ede46c84-73b4-4047-8fbc-abe0932d33a2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/main.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/BookingEntry.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/BookingEntry.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/BookingsTableModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/BookingsTableModel.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseConnectionTest.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseConnectionTest.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManager.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/MainFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/MainFrame.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/VenueSpace.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/VenueSpace.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseConnectionTest.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseConnectionTest.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManagment.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManagment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -82,7 +75,7 @@
       <workItem from="1743959331314" duration="516000" />
       <workItem from="1743959857056" duration="463000" />
       <workItem from="1743960895413" duration="2400000" />
-      <workItem from="1743964473255" duration="15146000" />
+      <workItem from="1743964473255" duration="17199000" />
     </task>
     <servers />
   </component>

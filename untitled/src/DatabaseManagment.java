@@ -111,7 +111,8 @@ public class DatabaseManagment {
         ArrayList<BookingEntry> bookings = new ArrayList<>();
 
         try {
-            String query = "SELECT b.Booking_ID, b.Date, b.Start_End_Time, r.Room_ID, " +
+            String query =
+                    "SELECT b.Booking_ID, b.Date, b.Start_End_Time, r.Room_ID, " +
                     "r.Name, b.Details, b.Confirmed, b.Client_ID, c.Company_Name " +
                     "FROM Bookings b " +
                     "JOIN Room r ON b.Room_ID = r.Room_ID " +
@@ -135,7 +136,7 @@ public class DatabaseManagment {
 
                     // For cost, you might want to calculate based on event type or fetch from invoices
                     // For simplicity, we're using a placeholder value
-                    double cost = 0.0;
+                    double cost = calculateBookingCost(venueSpace, venueType, timeSlot, date); //Tolu
 
                     BookingEntry booking = new BookingEntry(date, venueSpace, venueType, timeSlot,
                             client, description, cost);
@@ -151,6 +152,48 @@ public class DatabaseManagment {
         }
 
         return bookings;
+    }
+
+    private double calculateBookingCost(String venueName, String venueType, String timeSlot, String date) {
+        // Find matching venue
+        for (VenueSpace venue : getAllVenueSpaces()) {
+            if (venue.getName().equals(venueName)) {
+                // calculate cost based on timeSlot and venue rates
+                if (timeSlot.contains("Morning") || timeSlot.contains("Afternoon")) {
+                    return venue.getRate("hourly") * 3; // 3 hours
+                } else if (timeSlot.contains("Evening")) {
+                    boolean isWeekend = isWeekend(date);
+                    return isWeekend ? venue.getRate("evening_weekend") : venue.getRate("evening_weekday");
+                } else if (timeSlot.contains("Full Day")) {
+                    boolean isWeekend = isWeekend(date);
+                    return isWeekend ? venue.getRate("daily_weekend") : venue.getRate("daily_weekday");
+                } else if (timeSlot.contains("Half Day")) {
+                    return venue.getRate("half_day");
+                } else if (timeSlot.contains("Weekly")) {
+                    return venue.getRate("weekly");
+                }
+            }
+        }
+        return 0.0;
+    }
+
+    private boolean isWeekend(String dateString) {
+        try {
+            java.time.LocalDate date = java.time.LocalDate.parse(dateString);
+            int day = date.getDayOfWeek().getValue();
+            return (day >= 5); // Friday, Saturday, Sunday are considered weekend
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    // You'll also need this method to get venue spaces:
+    private ArrayList<VenueSpace> getAllVenueSpaces() {
+        // This is a simplified version - you should implement it properly
+        ArrayList<VenueSpace> spaces = new ArrayList<>();
+        // Create the same venue spaces as in CalendarPanel.initializeVenueSpaces()
+        // ... (copy the venue creation code)
+        return spaces;
     }
 
     /**
