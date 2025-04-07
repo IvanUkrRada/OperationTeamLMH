@@ -36,26 +36,26 @@ public class ReviewPanel extends JPanel {
 
         add(controlPanel, BorderLayout.NORTH);
 
-        // Reviews table
+
         tableModel = new ReviewTableModel(reviews);
         reviewsTable = new JTable(tableModel);
 
-        // Set column widths
-        reviewsTable.getColumnModel().getColumn(0).setPreferredWidth(50);    // Review ID
-        reviewsTable.getColumnModel().getColumn(1).setPreferredWidth(50);    // Rating
-        reviewsTable.getColumnModel().getColumn(2).setPreferredWidth(150);   // Name
-        reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(350);   // Review
+
+        reviewsTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        reviewsTable.getColumnModel().getColumn(1).setPreferredWidth(50);
+        reviewsTable.getColumnModel().getColumn(2).setPreferredWidth(150);
+        reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(350);
 
         JScrollPane scrollPane = new JScrollPane(reviewsTable);
         add(scrollPane, BorderLayout.CENTER);
 
-        // Button panel
+
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         addButton = new JButton("Add Review");
         buttonPanel.add(addButton);
         add(buttonPanel, BorderLayout.SOUTH);
 
-        // Action listeners
+
         filterCombo.addActionListener(e -> refresh());
         refreshButton.addActionListener(e -> refresh());
         addButton.addActionListener(e -> addReview());
@@ -69,10 +69,10 @@ public class ReviewPanel extends JPanel {
         reviewsTable.setModel(tableModel);
 
         // Adjust column widths
-        reviewsTable.getColumnModel().getColumn(0).setPreferredWidth(50);    // Review ID
-        reviewsTable.getColumnModel().getColumn(1).setPreferredWidth(50);    // Rating
-        reviewsTable.getColumnModel().getColumn(2).setPreferredWidth(150);   // Name
-        reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(350);   // Review
+        reviewsTable.getColumnModel().getColumn(0).setPreferredWidth(50);
+        reviewsTable.getColumnModel().getColumn(1).setPreferredWidth(50);
+        reviewsTable.getColumnModel().getColumn(2).setPreferredWidth(150);
+        reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(350);
 
         reviewsTable.repaint();
     }
@@ -144,16 +144,15 @@ public class ReviewPanel extends JPanel {
             String review = tReview.getText();
 
             if (areFieldsValid(name, review)) {
-                // Generate a review ID based on the current number of reviews
                 String reviewId = (tableModel.getNumberReviews() + 1) + "";
 
                 try {
-                    // Add to database
+
                     DatabaseManagment dbManagement = new DatabaseManagment();
                     ReviewEntry newReview = new ReviewEntry(reviewId, rating, name, review);
 
                     if (dbManagement.addReview(newReview)) {
-                        // Add to table model
+
                         tableModel.addReview(reviewId, rating, name, review);
                         JOptionPane.showMessageDialog(null, "Review successfully added.");
                         reviewDialog.dispose();
