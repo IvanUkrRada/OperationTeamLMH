@@ -413,6 +413,14 @@ class ClientTableModel extends AbstractTableModel {
     public void addClient (String clientID, String companyName, String contactName, String contactEmail, String phoneNumber, String streetAddress, String city, String postcode, String billingName, String billingEmail){
         ClientEntry newEntry = new ClientEntry( clientID,  companyName,  contactName,  contactEmail,  phoneNumber,  streetAddress,  city,  postcode,  billingName,  billingEmail);
         clients.add (newEntry);
+        DatabaseManagment dbManagement = new DatabaseManagment();
+
+        if(dbManagement.addClient (newEntry)) {
+            JOptionPane.showMessageDialog (null, "Client successfully added.");
+        }
+        else{
+            JOptionPane.showMessageDialog (null, "Error! Unable to add client.");
+        }
         fireTableDataChanged();
     }
 

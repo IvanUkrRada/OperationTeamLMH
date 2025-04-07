@@ -6,10 +6,9 @@
   <component name="ChangeListManager">
     <list default="true" id="ede46c84-73b4-4047-8fbc-abe0932d33a2" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.iml" beforeDir="false" afterPath="$PROJECT_DIR$/main.iml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManagment.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManagment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/ClientPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/ClientPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -95,7 +94,7 @@
       <workItem from="1744042309932" duration="733000" />
       <workItem from="1744043207003" duration="266000" />
       <workItem from="1744043478832" duration="137000" />
-      <workItem from="1744043621386" duration="1457000" />
+      <workItem from="1744043621386" duration="6050000" />
     </task>
     <servers />
   </component>

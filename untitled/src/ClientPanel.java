@@ -14,7 +14,9 @@ public class ClientPanel extends JPanel {
         this.parentFrame = parent;
 
         setLayout(new BorderLayout());
-        ArrayList<ClientEntry> clients = new ArrayList<>();
+        DatabaseManagment dbManagement = new DatabaseManagment();
+
+        ArrayList<ClientEntry> clients = dbManagement.getAllClients();
         tableModel = new ClientTableModel(clients);
         clientsTable = new JTable(tableModel);
 
@@ -154,7 +156,7 @@ public class ClientPanel extends JPanel {
             String billingEmail = tBillingEmail.getText();
 
             if (areFieldsValid(companyName, contactName, contactEmail, phoneNumber, streetAddress, city, postcode, billingName, billingEmail)) {
-                String clientID = tableModel.getNumberClients() + "";
+                String clientID = (tableModel.getNumberClients() + 2 )+ "";
 
                 tableModel.addClient(clientID, companyName, contactName, contactEmail, phoneNumber, streetAddress, city, postcode, billingName, billingEmail);
 

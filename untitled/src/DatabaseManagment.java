@@ -31,7 +31,7 @@ public class DatabaseManagment {
     /**
      * Private constructor for Singleton pattern
      */
-    private DatabaseManagment() {
+    DatabaseManagment() {
         // Initialize connection on creation
         getConnection();
     }
@@ -152,6 +152,76 @@ public class DatabaseManagment {
         }
 
         return bookings;
+    }
+
+    public ArrayList<ClientEntry> getAllClients () {
+
+        ArrayList <ClientEntry>clients = new ArrayList<>();
+
+        try{
+            String query = "SELECT c.ClientID, c.Company_Name, c.Contact_Name, c.Contact_Email, c.Phone_Number, " +
+                    "c.Street_Address, c.City, c.Postcode, c.Billing_Name, c.Billing_Email " +
+                    "FROM Clients c " +
+                    "ORDER BY c.ClientID";
+
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(query)) {
+
+                while(rs.next()) {
+                    String clientID = rs.getString("ClientID");
+                    String companyName = rs.getString ("Company_Name");
+                    String contactName = rs.getString ("Contact_Name");
+                    String contactEmail = rs.getString ("Contact_Email");
+                    String phoneNumber = rs.getString ("Phone_Number");
+                    String streetAddress = rs.getString ("Street_Address");
+                    String city = rs.getString ("City");
+                    String postcode = rs.getString ("Postcode");
+                    String billingName = rs.getString ("Billing_Name");
+                    String billingEmail = rs.getString ("Billing_Email");
+
+                    ClientEntry client = new ClientEntry (clientID, companyName, contactName, contactEmail,
+                            phoneNumber, streetAddress, city, postcode, billingName, billingEmail);
+
+                    clients.add(client);
+                }
+            }
+
+        }catch(SQLException e){
+            logger.log(Level.SEVERE, "Error fetching clients: " + e.getMessage(), e);
+            displayError("Database Error", "Failed to fetch clients: " + e.getMessage());
+        }
+
+        return clients;
+    }
+
+    public boolean addClient (ClientEntry newEntry){
+
+        PreparedStatement pstmt = null;
+        try{
+            String query = "INSERT INTO Clients (ClientID, Company_Name, Contact_Name, Contact_Email, Phone_Number, " +
+                    "Street_Address, City, Postcode, Billing_Name, Billing_Email) VALUES (?,?,?,?,?,?,?,?,?,?)";
+
+            pstmt = connection.prepareStatement(query);
+
+            pstmt.setString (1, newEntry.getClientID());
+            pstmt.setString (2, newEntry.getCompanyName());
+            pstmt.setString (3, newEntry.getContactName());
+            pstmt.setString (4, newEntry.getContactEmail());
+            pstmt.setString (5, newEntry.getPhoneNumber());
+            pstmt.setString (6, newEntry.getStreetAddress());
+            pstmt.setString (7, newEntry.getCity());
+            pstmt.setString (8, newEntry.getPostcode());
+            pstmt.setString (9, newEntry.getBillingName());
+            pstmt.setString (10, newEntry.getBillingEmail());
+
+            int affectedRows = pstmt.executeUpdate();
+            return true;
+
+        }catch(SQLException e){
+            logger.log(Level.SEVERE, "Error fetching clients: " + e.getMessage(), e);
+            displayError("Database Error", "Failed to fetch clients: " + e.getMessage());
+            return false;
+        }
     }
 
     private double calculateBookingCost(String venueName, String venueType, String timeSlot, String date) {
