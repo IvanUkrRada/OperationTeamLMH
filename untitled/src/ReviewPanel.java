@@ -2,14 +2,16 @@ package untitled.src;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.*;
 import java.util.ArrayList;
 
 public class ReviewPanel extends JPanel {
     private MainFrame parentFrame;
     private CalendarPanel calendarPanel;
-    private JTextArea reviewsArea;
+    private JTable reviewsTable;
+    private ReviewTableModel tableModel;
     private JComboBox<String> filterCombo;
-    private JButton respondButton, refreshButton;
+    private JButton addButton, refreshButton;
 
     public ReviewPanel(MainFrame parent, CalendarPanel calendarPanel) {
         this.parentFrame = parent;
@@ -17,7 +19,11 @@ public class ReviewPanel extends JPanel {
 
         setLayout(new BorderLayout());
 
+        // Load reviews from database
+        DatabaseManagment dbManagement = new DatabaseManagment();
+        ArrayList<ReviewEntry> reviews = dbManagement.getAllReviews();
 
+        // Control panel for filter
         JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         controlPanel.add(new JLabel("Filter by:"));
 
@@ -30,114 +36,147 @@ public class ReviewPanel extends JPanel {
 
         add(controlPanel, BorderLayout.NORTH);
 
-        // Reviews to view
-        reviewsArea = new JTextArea();
-        reviewsArea.setEditable(false);
-        reviewsArea.setLineWrap(true);
-        reviewsArea.setWrapStyleWord(true);
-        add(new JScrollPane(reviewsArea), BorderLayout.CENTER);
+        // Reviews table
+        tableModel = new ReviewTableModel(reviews);
+        reviewsTable = new JTable(tableModel);
 
+        // Set column widths
+        reviewsTable.getColumnModel().getColumn(0).setPreferredWidth(50);    // Review ID
+        reviewsTable.getColumnModel().getColumn(1).setPreferredWidth(50);    // Rating
+        reviewsTable.getColumnModel().getColumn(2).setPreferredWidth(150);   // Name
+        reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(350);   // Review
 
+        JScrollPane scrollPane = new JScrollPane(reviewsTable);
+        add(scrollPane, BorderLayout.CENTER);
 
+        // Button panel
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        addButton = new JButton("Add Review");
+        buttonPanel.add(addButton);
+        add(buttonPanel, BorderLayout.SOUTH);
 
+        // Action listeners
         filterCombo.addActionListener(e -> refresh());
         refreshButton.addActionListener(e -> refresh());
-
-
-
-        loadSampleReviews();
+        addButton.addActionListener(e -> addReview());
     }
 
-    private void loadSampleReviews() {
-        StringBuilder sb = new StringBuilder();
-        //to be Done
-
-        reviewsArea.setText(sb.toString());
-    }
-
-    public static class Review {
-        private int reviewId;
-        private int clientId;
-        private String clientName;
-        private int rating;
-        private String comments;
-        private String date;
-        private String reviewType; // "venue", "room", "show"
-
-        public Review(int reviewId, int clientId, String clientName, int rating,
-                      String comments, String date, String reviewType) {
-            this.reviewId = reviewId;
-            this.clientId = clientId;
-            this.clientName = clientName;
-            this.rating = rating;
-            this.comments = comments;
-            this.date = date;
-            this.reviewType = reviewType;
-        }
-
-        // Add getters and setters
-        public int getReviewId() { return reviewId; }
-        public int getClientId() { return clientId; }
-        public String getClientName() { return clientName; }
-        public int getRating() { return rating; }
-        public String getComments() { return comments; }
-        public String getDate() { return date; }
-        public String getReviewType() { return reviewType; }
-
-        @Override
-        public String toString() {
-            return String.format("%s (%d★) - %s\n%s\n",
-                    clientName, rating, date, comments);
-        }
-    }
-
-    // Update the refresh method in ReviewPanel.java
     public void refresh() {
-        String filter = (String) filterCombo.getSelectedItem();
+        // Reload the reviews from the database
+        DatabaseManagment dbManagement = new DatabaseManagment();
+        ArrayList<ReviewEntry> reviews = dbManagement.getAllReviews();
+        tableModel = new ReviewTableModel(reviews);
+        reviewsTable.setModel(tableModel);
 
-        StringBuilder sb = new StringBuilder();
-        sb.append("== ").append(filter).append(" ==\n\n");
+        // Adjust column widths
+        reviewsTable.getColumnModel().getColumn(0).setPreferredWidth(50);    // Review ID
+        reviewsTable.getColumnModel().getColumn(1).setPreferredWidth(50);    // Rating
+        reviewsTable.getColumnModel().getColumn(2).setPreferredWidth(150);   // Name
+        reviewsTable.getColumnModel().getColumn(3).setPreferredWidth(350);   // Review
 
-        try {
-            DatabaseManagment dbManager = DatabaseManagment.getInstance();
-            ArrayList<Review> reviews = new ArrayList<>();
-
-            switch (filter) {
-                case "All Reviews":
-                    reviews = dbManager.getAllReviews();
-                    break;
-                case "Venue Reviews":
-                    reviews = dbManager.getVenueReviews();
-                    break;
-                case "Room Reviews":
-                    reviews = dbManager.getRoomReviews();
-                    break;
-                case "Show Reviews":
-                    reviews = dbManager.getShowReviews();
-                    break;
-                case "Recent Reviews":
-                    reviews = dbManager.getRecentReviews(30); // Last 30 days
-                    break;
-                default:
-                    loadSampleReviews();
-                    return;
-            }
-
-            if (reviews.isEmpty()) {
-                sb.append("No reviews found for this filter.");
-            } else {
-                for (Review review : reviews) {
-                    sb.append(review.toString()).append("\n");
-                }
-            }
-
-            reviewsArea.setText(sb.toString());
-
-        } catch (Exception e) {
-            System.err.println("Error loading reviews: " + e.getMessage());
-            e.printStackTrace();
-            reviewsArea.setText("Error loading reviews from database.");
-        }
+        reviewsTable.repaint();
     }
 
+    private void addReview() {
+        JDialog reviewDialog = new JDialog(parentFrame, "Add Review", true);
+        reviewDialog.setSize(500, 400);
+        reviewDialog.setLocationRelativeTo(parentFrame);
+
+        JPanel panel = new JPanel(new GridBagLayout());
+        panel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+        GridBagConstraints gbc = new GridBagConstraints();
+        gbc.insets = new Insets(5, 5, 5, 5);
+        gbc.anchor = GridBagConstraints.WEST;
+        gbc.fill = GridBagConstraints.HORIZONTAL;
+        gbc.weightx = 1.0;
+
+        JLabel lName = new JLabel("Name:");
+        JTextField tName = new JTextField(30);
+
+        JLabel lRating = new JLabel("Rating (1-5):");
+        JComboBox<Integer> cRating = new JComboBox<>(new Integer[]{1, 2, 3, 4, 5});
+        cRating.setSelectedIndex(4); // Default to 5
+
+        JLabel lReview = new JLabel("Review:");
+        JTextArea tReview = new JTextArea(5, 30);
+        tReview.setLineWrap(true);
+        tReview.setWrapStyleWord(true);
+        JScrollPane reviewScrollPane = new JScrollPane(tReview);
+
+        int row = 0;
+
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        panel.add(lName, gbc);
+
+        gbc.gridx = 1;
+        panel.add(tName, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        panel.add(lRating, gbc);
+
+        gbc.gridx = 1;
+        panel.add(cRating, gbc);
+
+        gbc.gridx = 0;
+        gbc.gridy = row++;
+        panel.add(lReview, gbc);
+
+        gbc.gridx = 1;
+        gbc.gridy = row++;
+        gbc.gridwidth = 2;
+        gbc.fill = GridBagConstraints.BOTH;
+        gbc.weighty = 1.0;
+        panel.add(reviewScrollPane, gbc);
+
+        JPanel buttonPanel = new JPanel();
+        JButton okButton = new JButton("OK");
+        JButton cancelButton = new JButton("Cancel");
+
+        buttonPanel.add(okButton);
+        buttonPanel.add(cancelButton);
+
+        okButton.addActionListener(e -> {
+            String name = tName.getText();
+            int rating = (Integer) cRating.getSelectedItem();
+            String review = tReview.getText();
+
+            if (areFieldsValid(name, review)) {
+                // Generate a review ID based on the current number of reviews
+                String reviewId = (tableModel.getNumberReviews() + 1) + "";
+
+                try {
+                    // Add to database
+                    DatabaseManagment dbManagement = new DatabaseManagment();
+                    ReviewEntry newReview = new ReviewEntry(reviewId, rating, name, review);
+
+                    if (dbManagement.addReview(newReview)) {
+                        // Add to table model
+                        tableModel.addReview(reviewId, rating, name, review);
+                        JOptionPane.showMessageDialog(null, "Review successfully added.");
+                        reviewDialog.dispose();
+                    } else {
+                        JOptionPane.showMessageDialog(null, "Error! Unable to add review to database.");
+                    }
+                } catch (Exception ex) {
+                    JOptionPane.showMessageDialog(null, "Error adding review: " + ex.getMessage());
+                }
+            } else {
+                JOptionPane.showMessageDialog(reviewDialog, "Please fill in all the fields.", "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        });
+
+        cancelButton.addActionListener(e -> reviewDialog.dispose());
+
+        reviewDialog.add(panel, BorderLayout.CENTER);
+        reviewDialog.add(buttonPanel, BorderLayout.SOUTH);
+
+        reviewDialog.setVisible(true);
+    }
+
+    private boolean areFieldsValid(String name, String review) {
+        return !name.isEmpty() && !review.isEmpty();
+    }
 }

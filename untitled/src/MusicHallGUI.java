@@ -86,6 +86,7 @@ class MainFrame extends JFrame {
         contentPanel.add(reviewPanel, "Review");
         contentPanel.add(financePanel, "Finance");
 
+
         // Add panels to the main frame
         mainPanel.add(navPanel, BorderLayout.WEST);
         mainPanel.add(contentPanel, BorderLayout.CENTER);
@@ -101,18 +102,15 @@ class MainFrame extends JFrame {
 
     private JPanel createNavigationPanel() {
         JPanel navPanel = new JPanel();
-        navPanel.setLayout(new GridLayout(7, 1, 0, 10));
+        navPanel.setLayout(new GridLayout(8, 1, 0, 10));
         navPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
         navPanel.setPreferredSize(new Dimension(150, 0));
         ImageIcon calendarIcon = new ImageIcon("untitled/imageCalendar2.png");
         Image img = calendarIcon.getImage();
         Image newImg = img.getScaledInstance(80, 80, Image.SCALE_SMOOTH); // Resize
         calendarIcon = new ImageIcon(newImg);
-        JButton calendarButton = new JButton(calendarIcon);
-        calendarButton.setBorderPainted(true);
-        calendarButton.setContentAreaFilled(false);
-        calendarButton.setFocusPainted(false);
-        calendarButton.setOpaque(false);
+
+
         JButton bookingsButton = createNavButton("Bookings");
         JButton clientsButton = createNavButton("Clients");
         JButton reviewButton = createNavButton("Reviews");
@@ -120,9 +118,11 @@ class MainFrame extends JFrame {
         JButton helpButton = createNavButton("Help");
         JButton exitButton = createNavButton("Exit");
         JButton seatingButton = createNavButton("Seating");
-        navPanel.add(seatingButton);
+        JButton calendarButton = createNavButton("Calendar");
+
 
         navPanel.add(calendarButton);
+        navPanel.add(seatingButton);
         navPanel.add(bookingsButton);
         navPanel.add (clientsButton);
         navPanel.add(reviewButton);
@@ -187,8 +187,7 @@ class VenueSpace {
     private String name;
     private Map<String, Integer> capacities;
     private Map<String, Double> rates;
-    private String type; // "hall" or "room"
-
+    private String type;
     public VenueSpace(String name, String type) {
         this.name = name;
         this.type = type;
@@ -551,6 +550,99 @@ class ClientEntry {
                 " | Email: " + contactEmail + " | Phone: " + phoneNumber + " | Address: " + streetAddress +
                 ", " + city + " " + postcode + " | Billing Name: " + billingName + " | Billing Email: " + billingEmail;
     }
+}
+class ReviewEntry {
+    private String reviewId;
+    private int rating;
+    private String name;
+    private String review;
+
+    ReviewEntry(String reviewId, int rating, String name, String review) {
+        this.reviewId = reviewId;
+        this.rating = rating;
+        this.name = name;
+        this.review = review;
+    }
+
+    public String getReviewId() {
+        return reviewId;
+    }
+
+    public int getRating() {
+        return rating;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public String getReview() {
+        return review;
+    }
+
+    @Override
+    public String toString() {
+        return "ReviewID: " + reviewId + " | Rating: " + rating + " | Name: " + name +
+                " | Review: " + review;
+    }
+}
+
+class ReviewTableModel extends AbstractTableModel {
+    private final String[] columnNames = {"Review ID", "Rating", "Name", "Review"};
+    private ArrayList<ReviewEntry> reviews;
+
+    ReviewTableModel(ArrayList<ReviewEntry> reviews) {
+        this.reviews = reviews;
+    }
+
+    public void addReview(String reviewId, int rating, String name, String review) {
+        ReviewEntry newEntry = new ReviewEntry(reviewId, rating, name, review);
+        reviews.add(newEntry);
+        fireTableDataChanged();
+    }
+
+    public int getRowCount() {
+        return reviews.size();
+    }
+
+    @Override
+    public int getColumnCount() {
+        return columnNames.length;
+    }
+
+    @Override
+    public String getColumnName(int column) {
+        return columnNames[column];
+    }
+
+    public int getNumberReviews() {
+        return reviews.size();
+    }
+
+    public Object getValueAt(int rowIndex, int columnIndex) {
+        if (rowIndex >= reviews.size()) {
+            return null;
+        }
+
+        ReviewEntry review = reviews.get(rowIndex);
+
+        return switch (columnIndex) {
+            case 0 -> review.getReviewId();
+            case 1 -> review.getRating();
+            case 2 -> review.getName();
+            case 3 -> review.getReview();
+            default -> null;
+        };
+    }
+
+    @Override
+    public Class<?> getColumnClass(int columnIndex) {
+        if (columnIndex == 1) {
+            return Integer.class;
+        }
+        return String.class;
+    }
+
 }
 
 

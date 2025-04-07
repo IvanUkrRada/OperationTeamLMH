@@ -736,105 +736,7 @@ public class DatabaseManagment {
 //    }
 
 
-    public ArrayList<ReviewPanel.Review> getAllReviews() {
-        ArrayList<ReviewPanel.Review> reviews = new ArrayList<>();
 
-        try {
-            String query = "SELECT r.Review_ID, r.Client_ID, c.Company_Name, r.Rating, " +
-                    "FROM Reviews r " +
-                    "JOIN Clients c ON r.Client_ID = c.ClientID " +
-                    "ORDER BY r.Date DESC";
-
-            try (Statement stmt = connection.createStatement();
-                 ResultSet rs = stmt.executeQuery(query)) {
-
-                while (rs.next()) {
-                    int reviewId = rs.getInt("Review_ID");
-                    int clientId = rs.getInt("Client_ID");
-                    String clientName = rs.getString("Company_Name");
-                    int rating = rs.getInt("Rating");
-                    String comments = rs.getString("Comments");
-                    String date = rs.getString("Date");
-                    String type = rs.getString("Type");
-
-                    ReviewPanel.Review review = new ReviewPanel.Review(reviewId, clientId, clientName,
-                            rating, comments, date, type);
-                    reviews.add(review);
-                }
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error fetching reviews: " + e.getMessage(), e);
-            displayError("Database Error", "Failed to fetch reviews: " + e.getMessage());
-        }
-
-        return reviews;
-    }
-
-    // Add methods to get filtered reviews
-    public ArrayList<ReviewPanel.Review> getVenueReviews() {
-        return getReviewsByType("venue");
-    }
-
-    public ArrayList<ReviewPanel.Review> getRoomReviews() {
-        return getReviewsByType("room");
-    }
-
-    public ArrayList<ReviewPanel.Review> getShowReviews() {
-        return getReviewsByType("show");
-    }
-
-    public ArrayList<ReviewPanel.Review> getRecentReviews(int days) {
-        ArrayList<ReviewPanel.Review> reviews = new ArrayList<>();
-
-        try {
-            String query = "SELECT r.Review_ID, r.Client_ID, c.Company_Name, r.Rating, " +
-                    "FROM Reviews r " +
-                    "JOIN Clients c ON r.Client_ID = c.ClientID " +
-                    "ORDER BY r.Review_ID DESC";
-
-            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-                pstmt.setInt(1, days);
-
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        // Same code as in getAllReviews to create Review objects
-                        // ...
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error fetching recent reviews: " + e.getMessage(), e);
-        }
-
-        return reviews;
-    }
-
-    private ArrayList<ReviewPanel.Review> getReviewsByType(String type) {
-        ArrayList<ReviewPanel.Review> reviews = new ArrayList<>();
-
-        try {
-            String query =
-                    "SELECT r.Review_ID, r.Client_ID, c.Company_Name, r.Rating, " +
-                    "FROM Reviews r " +
-                    "JOIN Clients c ON r.Client_ID = c.ClientID " +
-                    "ORDER BY r.Review_ID DESC";
-
-            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-                pstmt.setString(1, type);
-
-                try (ResultSet rs = pstmt.executeQuery()) {
-                    while (rs.next()) {
-                        // Same code as in getAllReviews to create Review objects
-                        // ...
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error fetching reviews by type: " + e.getMessage(), e);
-        }
-
-        return reviews;
-    }
 
     /**
      * Checks if a venue is available for the given date and time
@@ -867,5 +769,138 @@ public class DatabaseManagment {
         }
 
         return false; // Default to unavailable on error
+    }
+    // Add these methods to your DatabaseManagment class
+
+    /**
+     * Gets all reviews from the database
+     * @return ArrayList of ReviewEntry objects
+     */
+    public ArrayList<ReviewEntry> getAllReviews() {
+        ArrayList<ReviewEntry> reviews = new ArrayList<>();
+
+        try {
+            Connection conn = getConnection();
+            if (conn == null) {
+                logger.log(Level.SEVERE, "Database connection is null");
+                return generateSampleReviews();
+            }
+
+            String query = "SELECT `Review ID`, Rating, Name, Review FROM Reviews ORDER BY `Review ID`";
+
+            try (Statement stmt = conn.createStatement();
+                 ResultSet rs = stmt.executeQuery(query)) {
+
+                while (rs.next()) {
+                    String reviewId = String.valueOf(rs.getInt("Review ID"));
+                    int rating = rs.getInt("Rating");
+                    String name = rs.getString("Name");
+                    String review = rs.getString("Review");
+
+                    ReviewEntry reviewEntry = new ReviewEntry(reviewId, rating, name, review);
+                    reviews.add(reviewEntry);
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching reviews: " + e.getMessage(), e);
+            displayError("Database Error", "Failed to fetch reviews: " + e.getMessage());
+            return generateSampleReviews();
+        }
+
+        return reviews;
+    }
+
+    /**
+     * Adds a new review to the database
+     * @param review ReviewEntry object to add
+     * @return boolean indicating success
+     */
+    public boolean addReview(ReviewEntry review) {
+        try {
+            Connection conn = getConnection();
+            if (conn == null) {
+                logger.log(Level.SEVERE, "Database connection is null");
+                return false;
+            }
+
+            String query = "INSERT INTO Reviews (Rating, Name, Review) VALUES (?, ?, ?)";
+
+            try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+                pstmt.setInt(1, review.getRating());
+                pstmt.setString(2, review.getName());
+                pstmt.setString(3, review.getReview());
+
+                int rowsInserted = pstmt.executeUpdate();
+                return rowsInserted > 0;
+            }
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error adding review: " + e.getMessage(), e);
+            displayError("Database Error", "Failed to add review: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /**
+     * Generates sample reviews for when database connection fails
+     * @return ArrayList of sample ReviewEntry objects
+     */
+    private ArrayList<ReviewEntry> generateSampleReviews() {
+        ArrayList<ReviewEntry> sampleReviews = new ArrayList<>();
+
+        sampleReviews.add(new ReviewEntry("1", 5, "Emily Chen",
+                "Absolutely brilliant! The entire cast was superb."));
+        sampleReviews.add(new ReviewEntry("2", 4, "Michael Johnson",
+                "The set design was as impressive as the performances."));
+        sampleReviews.add(new ReviewEntry("3", 4, "Olivia Wilson",
+                "A delightful rendition of a classic play."));
+        sampleReviews.add(new ReviewEntry("4", 3, "Benjamin Turner",
+                "Good, but not great. The second act dragged on."));
+        sampleReviews.add(new ReviewEntry("5", 5, "Sophia Williams",
+                "An artistic triumph that will stay with me for years."));
+
+        return sampleReviews;
+    }
+
+    /**
+     * Gets recent reviews from the database
+     * @param limit Number of reviews to return
+     * @return ArrayList of ReviewEntry objects
+     */
+    public ArrayList<ReviewEntry> getRecentReviews(int limit) {
+        ArrayList<ReviewEntry> reviews = new ArrayList<>();
+
+        try {
+            Connection conn = getConnection();
+            if (conn == null) {
+                logger.log(Level.SEVERE, "Database connection is null");
+                return generateSampleReviews();
+            }
+
+            String query = "SELECT `Review ID`, Rating, Name, Review FROM Reviews ORDER BY `Review ID` DESC LIMIT ?";
+
+            try (PreparedStatement pstmt = conn.prepareStatement(query)) {
+                pstmt.setInt(1, limit);
+
+                ResultSet rs = pstmt.executeQuery();
+                while (rs.next()) {
+                    String reviewId = String.valueOf(rs.getInt("Review ID"));
+                    int rating = rs.getInt("Rating");
+                    String name = rs.getString("Name");
+                    String review = rs.getString("Review");
+
+                    ReviewEntry reviewEntry = new ReviewEntry(reviewId, rating, name, review);
+                    reviews.add(reviewEntry);
+                }
+            }
+
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error fetching recent reviews: " + e.getMessage(), e);
+            displayError("Database Error", "Failed to fetch reviews: " + e.getMessage());
+            return generateSampleReviews();
+        }
+
+        return reviews;
     }
 }

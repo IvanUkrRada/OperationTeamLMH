@@ -5,10 +5,10 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ede46c84-73b4-4047-8fbc-abe0932d33a2" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/untitled/src/SeatingPanel.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/ReviewPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/ReviewPanel.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -94,7 +94,7 @@
       <workItem from="1744043207003" duration="266000" />
       <workItem from="1744043478832" duration="137000" />
       <workItem from="1744043621386" duration="6050000" />
-      <workItem from="1744050590937" duration="398000" />
+      <workItem from="1744050590937" duration="5821000" />
     </task>
     <servers />
   </component>
@@ -111,5 +111,16 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/untitled/src/MusicHallGUI.java</url>
+          <line>480</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>
