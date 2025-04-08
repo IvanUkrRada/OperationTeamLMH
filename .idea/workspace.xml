@@ -5,14 +5,19 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ede46c84-73b4-4047-8fbc-abe0932d33a2" name="Changes" comment="Database connected,&#10;Bookings Test data displayed">
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/BookingEntry.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/BookingEntry.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/BookingsTableModel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/BookingsTableModel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel$1.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/CalendarPanel.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManagment.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/DatabaseManagment.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/ReviewPanel.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/ReviewPanel.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/MainFrame.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/MainFrame.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/MusicHallGUI.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/MusicHallGUI.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/main/untitled/src/VenueSpace.class" beforeDir="false" afterPath="$PROJECT_DIR$/out/production/main/untitled/src/VenueSpace.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/BookingsPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/BookingsPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/CalendarPanel.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/DatabaseManagment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/untitled/src/ReviewPanel.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/ReviewPanel.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/untitled/src/MusicHallGUI.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -37,30 +42,30 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;Application.DatabaseConnectionTest.executor&quot;: &quot;Run&quot;,
-    &quot;Application.DatabaseConnectionTester.executor&quot;: &quot;Run&quot;,
-    &quot;Application.MusicHallGUI.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;Database-Test01&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/miche/OneDrive - City, University of London/.Year 2/IN2033 Team Project/GitRepo/JDBC/mysql-connector-j-9.2.0.jar&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.2&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;terminal&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.DatabaseConnectionTest.executor": "Run",
+    "Application.DatabaseConnectionTester.executor": "Run",
+    "Application.MusicHallGUI.executor": "Run",
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "WebServerToolWindowFactoryState": "false",
+    "git-widget-placeholder": "Database-Test01",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/ToluO/Downloads/OperationTeamLMH-Database-Test01/OperationTeamLMH-Database-Test01",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2",
+    "settings.editor.selected.configurable": "terminal",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -78,7 +83,8 @@
       <workItem from="1743959857056" duration="463000" />
       <workItem from="1743960895413" duration="2400000" />
       <workItem from="1743964473255" duration="21122000" />
-      <workItem from="1744026828247" duration="6948000" />
+      <workItem from="1744026828247" duration="10871000" />
+      <workItem from="1744042216102" duration="11050000" />
     </task>
     <task id="LOCAL-00001" summary="Database connected,&#10;Bookings Test data displayed">
       <option name="closed" value="true" />
@@ -97,5 +103,30 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Database connected,&#10;Bookings Test data displayed" />
     <option name="LAST_COMMIT_MESSAGE" value="Database connected,&#10;Bookings Test data displayed" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/untitled/src/DatabaseManagment.java</url>
+          <line>364</line>
+          <option name="timeStamp" value="2" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/untitled/src/DatabaseManagment.java</url>
+          <line>36</line>
+          <option name="timeStamp" value="3" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-method">
+          <url>file://$PROJECT_DIR$/untitled/src/DatabaseManagment.java</url>
+          <line>419</line>
+          <properties class="untitled.src.DatabaseManagment" method="loadBookingsFromDatabase">
+            <option name="EMULATED" value="true" />
+            <option name="WATCH_EXIT" value="false" />
+          </properties>
+          <option name="timeStamp" value="4" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

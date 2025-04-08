@@ -17,7 +17,6 @@ public class CalendarPanel extends JPanel {
     private int currentMonth, currentYear;
     private Map<String, ArrayList<BookingEntry>> bookings;
     private ArrayList<VenueSpace> venueSpaces;
-    private ArrayList<BookingEntry> tempBookings = new ArrayList<>(); //Added by Tolu
 
     public CalendarPanel(MainFrame parent) {
         this.parentFrame = parent;
@@ -166,50 +165,10 @@ public class CalendarPanel extends JPanel {
         venueSpaces.add(chekhovChamber);
     }
     public void refresh() {
-        // Load bookings from the database - Tolu (line 169)
-        loadBookingsFromDatabase();
-
         updateCalendarView();
         parentFrame.setStatus("Calendar updated");
     }
 
-    /**
-     * added methods: addBookingFromDatabase() and loadBookingsFromDatabase()
-      * @param booking
-     */
-    private void addBookingFromDatabase(BookingEntry booking) {
-        // Add only to local collection, don't save to database since it came from there
-        String date = booking.getDate();
-        if (!bookings.containsKey(date)) {
-            bookings.put(date, new ArrayList<>());
-        }
-        bookings.get(date).add(booking);
-    }
-
-    //Tolu - Added loadBookingFromDatabase()
-    private void loadBookingsFromDatabase() {
-        try {
-            DatabaseManagment dbManager = DatabaseManagment.getInstance();
-            ArrayList<BookingEntry> dbBookings = dbManager.getAllBookings();
-
-            // Clear current bookings first
-            bookings.clear();
-
-            // Add all bookings from database directly to local collection
-            for (BookingEntry booking : dbBookings) {
-                // Add directly to local collection instead of using addBooking()
-                String date = booking.getDate();
-                if (!bookings.containsKey(date)) {
-                    bookings.put(date, new ArrayList<>());
-                }
-                bookings.get(date).add(booking);
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error loading bookings from database: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
     private void updateCalendarView() {
         calendarView.removeAll();
 
@@ -419,7 +378,7 @@ public class CalendarPanel extends JPanel {
         switch (timeSlot) {
             case "Morning (10:00-13:00):":
             case "Afternoon (13:00-17:00)":
-                return venue.getRate("hourly") * 3; // 3 hours
+                return venue.getRate("hourly") * 3;
             case "Evening (17:00-00:00)":
                 return isWeekend ? venue.getRate("evening_weekend") : venue.getRate("evening_weekday");
             case "Full Day (10:00-00:00)":
@@ -429,35 +388,12 @@ public class CalendarPanel extends JPanel {
         }
     }
 
-    //addBookings updated - Tolu
     public void addBooking(BookingEntry booking) {
-        // Try to save to database first
-        try {
-            DatabaseManagment dbManager = DatabaseManagment.getInstance();
-            boolean success = dbManager.addBooking(booking);
-            if (success) {
-                // Now add to local collection
-                String date = booking.getDate();
-                if (!bookings.containsKey(date)) {
-                    bookings.put(date, new ArrayList<>());
-                }
-                bookings.get(date).add(booking);
-                parentFrame.setStatus("Booking added to database");
-            } else {
-                parentFrame.setStatus("Failed to add booking to database");
-            }
-        } catch (Exception e) {
-            System.err.println("Error saving booking to database: " + e.getMessage());
-            e.printStackTrace();
-
-            // add to local collection incase DB fails
-            String date = booking.getDate();
-            if (!bookings.containsKey(date)) {
-                bookings.put(date, new ArrayList<>());
-            }
-            bookings.get(date).add(booking);
-            parentFrame.setStatus("Booking added locally only - database error");
+        String date = booking.getDate();
+        if (!bookings.containsKey(date)) {
+            bookings.put(date, new ArrayList<>());
         }
+        bookings.get(date).add(booking);
     }
 
     public ArrayList<BookingEntry> getAllBookings() {
@@ -483,25 +419,24 @@ public class CalendarPanel extends JPanel {
     public ArrayList<VenueSpace> getVenueSpaces() {
         return venueSpaces;
     }
-    //updated removeBooking - Tolu
     public void removeBooking(BookingEntry booking) {
-        // attempt to delete from database first if it has an ID
-        if (booking.getBookingId() > 0) {
+        // First try to remove from database if it has an ID
+        if (booking.getBookingID() > 0) {
             try {
                 DatabaseManagment dbManager = DatabaseManagment.getInstance();
-                boolean success = dbManager.removeBooking(booking.getBookingId());
+                boolean success = dbManager.removeBooking(booking.getBookingID());
                 if (success) {
-                    parentFrame.setStatus("Booking deleted from database");
+                    parentFrame.setStatus("Booking removed from database");
                 } else {
-                    parentFrame.setStatus("Failed to delete booking from database");
+                    parentFrame.setStatus("Warning: Failed to remove booking from database");
                 }
             } catch (Exception e) {
-                System.err.println("Error deleting booking from database: " + e.getMessage());
-                e.printStackTrace();
+                System.err.println("Error removing booking from database: " + e.getMessage());
+                parentFrame.setStatus("Warning: Error removing booking from database");
             }
         }
 
-        // always removes from local collection
+        // Always remove from local storage
         String date = booking.getDate();
         if (bookings.containsKey(date)) {
             bookings.get(date).remove(booking);
@@ -509,5 +444,8 @@ public class CalendarPanel extends JPanel {
                 bookings.remove(date);
             }
         }
+
+        // Update the view
+        updateCalendarView();
     }
 }

@@ -555,4 +555,6 @@ public class BookingsPanel extends JPanel {
             parentFrame.setStatus("Booking deleted");
         }
     }
+
+
 }

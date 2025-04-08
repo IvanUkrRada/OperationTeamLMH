@@ -8,10 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-// SQL Imports
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+
 
 
 public class MusicHallGUI {
@@ -48,6 +45,7 @@ class MainFrame extends JFrame {
                     "Warning: Could not connect to database. Some features may be limited.",
                     "Database Connection Error", JOptionPane.WARNING_MESSAGE);
         }
+
 
         setTitle("Music Hall Management System");
         setSize(1000, 700);
@@ -90,8 +88,46 @@ class MainFrame extends JFrame {
         // Set initial panel
         cardLayout.show(contentPanel, "Calendar");
 
+        loadBookingsFromDatabase();
+
         setVisible(true);
+
     }
+
+    private void loadBookingsFromDatabase() {
+        try {
+            // Get database manager instance
+            DatabaseManagment dbManager = DatabaseManagment.getInstance();
+
+            // Check if connection is available
+            if (dbManager.getConnection() != null) {
+                // Get bookings map from database
+                Map<String, ArrayList<BookingEntry>> dbBookings = dbManager.loadBookingsFromDatabase();
+
+                // Add each booking to the calendar panel
+                int count = 0;
+                for (Map.Entry<String, ArrayList<BookingEntry>> entry : dbBookings.entrySet()) {
+                    for (BookingEntry booking : entry.getValue()) {
+                        calendarPanel.addBooking(booking);
+                        count++;
+                    }
+                }
+
+                // Update status
+                setStatus("Loaded " + count + " bookings from database");
+
+                // Refresh all panels to show new data
+                refreshAllPanels();
+            } else {
+                setStatus("Database connection unavailable - working with sample data");
+            }
+        } catch (Exception e) {
+            System.err.println("Error loading bookings: " + e.getMessage());
+            e.printStackTrace();
+            setStatus("Error loading bookings from database");
+        }
+    }
+
 
     private JPanel createNavigationPanel() {
         JPanel navPanel = new JPanel();
@@ -145,6 +181,8 @@ class MainFrame extends JFrame {
                 "Help", JOptionPane.INFORMATION_MESSAGE);
     }
 
+
+
     private void confirmExit() {//In case user accidentaly pressed exit button, confirm
         int option = JOptionPane.showConfirmDialog(this,
                 "Are you sure you want to exit?",
@@ -166,6 +204,8 @@ class MainFrame extends JFrame {
         reviewPanel.refresh();
         financePanel.refresh();
     }
+
+
 }
 class VenueSpace {
     private String name;
@@ -245,20 +285,44 @@ class VenueSpace {
 
     class BookingEntry {
         private String date;
+
+        private String startEndTime;
+        private String roomID;
+        private String details;
+        private boolean confirmed;
+        private String clientID;
+
         private String venueSpace;
         private String venueType;  // "hall" or "room"
         private String timeSlot;
         private String client;
         private String description;
         private double cost;
-        private boolean confirmed;
         private String configuration; // For rooms: "classroom", "boardroom", "presentation" (Capacity)
 
         //Tolu - start
         private int bookingId = -1;  // -1 means not saved to database yet
 
-        public int getBookingId() {
+        public int getBookingID() {
             return bookingId;
+        }
+        public String getStartEndTime() {
+            return startEndTime;
+        }
+        public String getRoomID() {
+            return roomID;
+        }
+
+        public String getDetails() {
+            return details;
+        }
+
+        public boolean getConfirmed() {
+            return confirmed;
+        }
+
+        public String getClientID() {
+            return clientID;
         }
 
         public void setBookingId(int bookingId) {
@@ -327,8 +391,6 @@ class VenueSpace {
                 (confirmed ? " (Confirmed)" : " (Pending)");
     }
 }
-
-
 
 
 

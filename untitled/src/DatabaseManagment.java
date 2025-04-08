@@ -2,6 +2,8 @@ package untitled.src;
 
 import java.sql.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -32,8 +34,31 @@ public class DatabaseManagment {
      * Private constructor for Singleton pattern
      */
     private DatabaseManagment() {
-        // Initialize connection on creation
-        getConnection();
+        try {
+            // Load the MySQL JDBC driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Create the connection URL correctly
+            String url = "jdbc:mysql://" + SERVER + ":" + PORT + "/" + DATABASE +
+                    "?useSSL=false&serverTimezone=UTC";
+
+            // Create connection properties
+            Properties props = new Properties();
+            props.setProperty("user", USERNAME);
+            props.setProperty("password", PASSWORD);
+            props.setProperty("connectTimeout", "5000");
+
+            // Attempt to connect
+            connection = DriverManager.getConnection(url, props);
+            logger.log(Level.INFO, "Database connection established successfully");
+
+        } catch (ClassNotFoundException e) {
+            logger.log(Level.SEVERE, "MySQL JDBC Driver not found: " + e.getMessage(), e);
+            System.err.println("MySQL JDBC Driver not found: " + e.getMessage());
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Failed to connect to database: " + e.getMessage(), e);
+            System.err.println("Failed to connect to database: " + e.getMessage());
+        }
     }
 
     /**
@@ -75,6 +100,7 @@ public class DatabaseManagment {
         }
         return connection;
     }
+
 
     /**
      * Closes the database connection
@@ -210,46 +236,58 @@ public class DatabaseManagment {
         }
     }
 
-    /**
-     * Adds a new booking to the database
-     * @param booking BookingEntry object containing booking details
-     * @return true if successful, false otherwise
-     */
-    public boolean addBooking(BookingEntry booking) {
-        try {
-            // First find the Room_ID based on venue space name
-            int roomId = getRoomIdByName(booking.getVenueSpace());
+    public boolean addBooking (BookingEntry newEntry){
 
-            // Find Client_ID based on client name
-            int clientId = getClientIdByName(booking.getClient());
+        PreparedStatement pstmt = null;
+        try{
+            String query = "INSERT INTO Bookings (BookingID, Date, Start_End_Time, Room_ID, Details, Confirmed, Client_ID " +
+                    ") VALUES (?,?,?,?,?,?,?)";
 
-            // If we couldn't find the room or client, return false
-            if (roomId == -1 || clientId == -1) {
-                return false;
-            }
+            pstmt = connection.prepareStatement(query);
 
-            String query = "INSERT INTO Bookings (Date, Start_End_Time, Room_ID, Details, Confirmed, Client_ID) " +
-                    "VALUES (?, ?, ?, ?, ?, ?)";
+            pstmt.setInt (1, newEntry.getBookingID());
+            pstmt.setString (2, newEntry.getDate());
+            pstmt.setString (3, newEntry.getStartEndTime());
+            pstmt.setString (4, newEntry.getRoomID());
+            pstmt.setString (5, newEntry.getDetails());
+            pstmt.setBoolean (6, newEntry.getConfirmed());
+            pstmt.setString (7, newEntry.getClientID());
 
-            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-                pstmt.setString(1, booking.getDate());
-                pstmt.setString(2, booking.getTimeSlot());
-                pstmt.setInt(3, roomId);
-                pstmt.setString(4, booking.getDescription());
-                pstmt.setBoolean(5, booking.isConfirmed());
-                pstmt.setInt(6, clientId);
+            int affectedRows = pstmt.executeUpdate();
+            return true;
 
-                int rowsInserted = pstmt.executeUpdate();
-                return rowsInserted > 0;
-            }
-
-        } catch (SQLException e) {
-            logger.log(Level.SEVERE, "Error adding booking: " + e.getMessage(), e);
-            displayError("Database Error", "Failed to add booking: " + e.getMessage());
+        }catch(SQLException e){
+            logger.log(Level.SEVERE, "Error fetching clients: " + e.getMessage(), e);
+            displayError("Database Error", "Failed to fetch clients: " + e.getMessage());
             return false;
         }
     }
 
+    // Helper method to create a new client
+    private int createClient(String clientName) {
+        try {
+            String query = "INSERT INTO Clients (Company_Name, Contact_Name) VALUES (?, 'Unknown')";
+
+            try (PreparedStatement pstmt = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+                pstmt.setString(1, clientName);
+
+                int rowsInserted = pstmt.executeUpdate();
+
+                if (rowsInserted > 0) {
+                    try (ResultSet generatedKeys = pstmt.getGeneratedKeys()) {
+                        if (generatedKeys.next()) {
+                            return generatedKeys.getInt(1);
+                        }
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            logger.log(Level.SEVERE, "Error creating client: " + e.getMessage(), e);
+            System.err.println("Error creating client: " + e.getMessage());
+        }
+
+        return -1;
+    }
     /**
      * Updates an existing booking in the database
      * @param bookingId ID of the booking to update
@@ -293,13 +331,22 @@ public class DatabaseManagment {
         }
     }
 
+
+
     /**
      * Removes a booking from the database
      * @param bookingId ID of the booking to remove
      * @return true if successful, false otherwise
      */
+// Update removeBooking in DatabaseManagment.java
     public boolean removeBooking(int bookingId) {
         try {
+            // Make sure we have a valid connection
+            if (getConnection() == null) {
+                System.err.println("Cannot remove booking: No database connection");
+                return false;
+            }
+
             String query = "DELETE FROM Bookings WHERE Booking_ID = ?";
 
             try (PreparedStatement pstmt = connection.prepareStatement(query)) {
@@ -311,11 +358,12 @@ public class DatabaseManagment {
 
         } catch (SQLException e) {
             logger.log(Level.SEVERE, "Error removing booking: " + e.getMessage(), e);
-            displayError("Database Error", "Failed to remove booking: " + e.getMessage());
+            System.err.println("Error removing booking: " + e.getMessage());
             return false;
         }
-    }
 
+//        return false;
+    }
     /**
      * Gets the Room ID by room name
      * @param roomName Name of the room
@@ -368,302 +416,78 @@ public class DatabaseManagment {
         return -1;
     }
 
+    //Bookings import methods
+    public Map<String, ArrayList<BookingEntry>> loadBookingsFromDatabase() {
+        Map<String, ArrayList<BookingEntry>> bookingsMap = new HashMap<>();
 
+        try {
+            // Ensure we have a valid connection
+            if (getConnection() == null) {
+                System.err.println("Cannot load bookings: No database connection");
+                return bookingsMap;
+            }
 
-//    /**
-//     * Gets all events from the database
-//     * @return ArrayList of Event objects (you'll need to create this class)
-//     */
-//    public ArrayList<Event> getAllEvents() {
-//        ArrayList<Event> events = new ArrayList<>();
-//
-//        try {
-//            String query = "SELECT * FROM Events ORDER BY Event_ID";
-//
-//            try (Statement stmt = connection.createStatement();
-//                 ResultSet rs = stmt.executeQuery(query)) {
-//
-//                while (rs.next()) {
-//                    int eventId = rs.getInt("Event_ID");
-//                    String startEndDate = rs.getString("Start_End_Date");
-//                    double maxDiscount = rs.getDouble("Max_Discount");
-//                    String description = rs.getString("Description");
-//
-//                    Event event = new Event(eventId, startEndDate, maxDiscount, description);
-//                    events.add(event);
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching events: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch events: " + e.getMessage());
-//        }
-//
-//        return events;
-//    }
-//
-//    /**
-//     * Gets all rooms from the database
-//     * @return ArrayList of Room objects (you'll need to create this class)
-//     */
-//    public ArrayList<Room> getAllRooms() {
-//        ArrayList<Room> rooms = new ArrayList<>();
-//
-//        try {
-//            String query = "SELECT * FROM Room ORDER BY Room_ID";
-//
-//            try (Statement stmt = connection.createStatement();
-//                 ResultSet rs = stmt.executeQuery(query)) {
-//
-//                while (rs.next()) {
-//                    int roomId = rs.getInt("Room_ID");
-//                    String name = rs.getString("Name");
-//                    int capacity = rs.getInt("Capacity");
-//                    String layouts = rs.getString("Layouts");
-//
-//                    Room room = new Room(roomId, name, capacity, layouts);
-//                    rooms.add(room);
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching rooms: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch rooms: " + e.getMessage());
-//        }
-//
-//        return rooms;
-//    }
-//
-//    /**
-//     * Gets all clients from the database
-//     * @return ArrayList of Client objects (you'll need to create this class)
-//     */
-//    public ArrayList<Client> getAllClients() {
-//        ArrayList<Client> clients = new ArrayList<>();
-//
-//        try {
-//            String query = "SELECT * FROM Clients ORDER BY ClientID";
-//
-//            try (Statement stmt = connection.createStatement();
-//                 ResultSet rs = stmt.executeQuery(query)) {
-//
-//                while (rs.next()) {
-//                    int clientId = rs.getInt("ClientID");
-//                    String companyName = rs.getString("Company_Name");
-//                    String contactName = rs.getString("Contact_Name");
-//                    String contactEmail = rs.getString("Contact_Email");
-//                    String phoneNumber = rs.getString("Phone_Number");
-//
-//                    Client client = new Client(clientId, companyName, contactName, contactEmail, phoneNumber);
-//                    clients.add(client);
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching clients: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch clients: " + e.getMessage());
-//        }
-//
-//        return clients;
-//    }
-//
-//    /**
-//     * Gets ticket sales for a specific event
-//     * @param eventId ID of the event
-//     * @return ArrayList of TicketSale objects (you'll need to create this class)
-//     */
-//    public ArrayList<TicketSale> getTicketSalesForEvent(int eventId) {
-//        ArrayList<TicketSale> ticketSales = new ArrayList<>();
-//
-//        try {
-//            String query = "SELECT ts.* FROM Ticket_Sales ts " +
-//                    "JOIN Event_Tickets et ON ts.Ticketing_ID = et.Ticketing_ID " +
-//                    "WHERE et.Event_ID = ?";
-//
-//            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-//                pstmt.setInt(1, eventId);
-//
-//                try (ResultSet rs = pstmt.executeQuery()) {
-//                    while (rs.next()) {
-//                        int ticketingId = rs.getInt("Ticketing_ID");
-//                        String date = rs.getString("Date");
-//                        int totalSeats = rs.getInt("Total_Seats");
-//                        double value = rs.getDouble("Value");
-//
-//                        TicketSale ticketSale = new TicketSale(ticketingId, date, totalSeats, value);
-//                        ticketSales.add(ticketSale);
-//                    }
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching ticket sales: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch ticket sales: " + e.getMessage());
-//        }
-//
-//        return ticketSales;
-//    }
-//
-//    /**
-//     * Gets all reviews for a specific client
-//     * @param clientId ID of the client
-//     * @return ArrayList of Review objects (you'll need to create this class)
-//     */
-//    public ArrayList<Review> getReviewsForClient(int clientId) {
-//        ArrayList<Review> reviews = new ArrayList<>();
-//
-//        try {
-//            String query = "SELECT * FROM Reviews WHERE Client_ID = ?";
-//
-//            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-//                pstmt.setInt(1, clientId);
-//
-//                try (ResultSet rs = pstmt.executeQuery()) {
-//                    while (rs.next()) {
-//                        int reviewId = rs.getInt("Review_ID");
-//                        int rating = rs.getInt("Rating");
-//
-//                        Review review = new Review(reviewId, clientId, rating);
-//                        reviews.add(review);
-//                    }
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching reviews: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch reviews: " + e.getMessage());
-//        }
-//
-//        return reviews;
-//    }
-//
-//    /**
-//     * Gets all positive reviews (rating >= 4)
-//     * @return ArrayList of Review objects
-//     */
-//    public ArrayList<Review> getPositiveReviews() {
-//        ArrayList<Review> reviews = new ArrayList<>();
-//
-//        try {
-//            String query = "SELECT * FROM Reviews WHERE Rating >= 4";
-//
-//            try (Statement stmt = connection.createStatement();
-//                 ResultSet rs = stmt.executeQuery(query)) {
-//
-//                while (rs.next()) {
-//                    int reviewId = rs.getInt("Review_ID");
-//                    int clientId = rs.getInt("Client_ID");
-//                    int rating = rs.getInt("Rating");
-//
-//                    Review review = new Review(reviewId, clientId, rating);
-//                    reviews.add(review);
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching positive reviews: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch positive reviews: " + e.getMessage());
-//        }
-//
-//        return reviews;
-//    }
-//
-//    /**
-//     * Gets all negative reviews (rating < 4)
-//     * @return ArrayList of Review objects
-//     */
-//    public ArrayList<Review> getNegativeReviews() {
-//        ArrayList<Review> reviews = new ArrayList<>();
-//
-//        try {
-//            String query = "SELECT * FROM Reviews WHERE Rating < 4";
-//
-//            try (Statement stmt = connection.createStatement();
-//                 ResultSet rs = stmt.executeQuery(query)) {
-//
-//                while (rs.next()) {
-//                    int reviewId = rs.getInt("Review_ID");
-//                    int clientId = rs.getInt("Client_ID");
-//                    int rating = rs.getInt("Rating");
-//
-//                    Review review = new Review(reviewId, clientId, rating);
-//                    reviews.add(review);
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching negative reviews: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch negative reviews: " + e.getMessage());
-//        }
-//
-//        return reviews;
-//    }
-//
-//    /**
-//     * Gets invoices for a specific client
-//     * @param clientId ID of the client
-//     * @return ArrayList of Invoice objects (you'll need to create this class)
-//     */
-//    public ArrayList<Invoice> getInvoicesForClient(int clientId) {
-//        ArrayList<Invoice> invoices = new ArrayList<>();
-//
-//        try {
-//            String query = "SELECT * FROM Invoices WHERE Client_ID = ?";
-//
-//            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-//                pstmt.setInt(1, clientId);
-//
-//                try (ResultSet rs = pstmt.executeQuery()) {
-//                    while (rs.next()) {
-//                        int invoiceId = rs.getInt("Invoice_ID");
-//                        String date = rs.getString("Date");
-//                        double costs = rs.getDouble("Costs");
-//                        double total = rs.getDouble("Total");
-//
-//                        Invoice invoice = new Invoice(invoiceId, clientId, date, costs, total);
-//                        invoices.add(invoice);
-//                    }
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching invoices: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch invoices: " + e.getMessage());
-//        }
-//
-//        return invoices;
-//    }
-//
-//    /**
-//     * Gets the contract for a specific client and event
-//     * @param clientId ID of the client
-//     * @param eventId ID of the event
-//     * @return Contract object (you'll need to create this class) or null if not found
-//     */
-//    public Contract getContractForClientEvent(int clientId, int eventId) {
-//        try {
-//            String query = "SELECT * FROM Contract WHERE Client_ID = ? AND Event_ID = ?";
-//
-//            try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-//                pstmt.setInt(1, clientId);
-//                pstmt.setInt(2, eventId);
-//
-//                try (ResultSet rs = pstmt.executeQuery()) {
-//                    if (rs.next()) {
-//                        String details = rs.getString("Details");
-//
-//                        return new Contract(clientId, eventId, details);
-//                    }
-//                }
-//            }
-//
-//        } catch (SQLException e) {
-//            logger.log(Level.SEVERE, "Error fetching contract: " + e.getMessage(), e);
-//            displayError("Database Error", "Failed to fetch contract: " + e.getMessage());
-//        }
-//
-//        return null;
-//    }
+            String query =
+                    "SELECT b.Booking_ID, b.Date, b.Start_End_Time, r.Room_ID, " +
+                            "r.Name, b.Details, b.Confirmed, b.Client_ID, c.Company_Name " +
+                            "FROM Bookings b " +
+                            "JOIN Room r ON b.Room_ID = r.Room_ID " +
+                            "JOIN Clients c ON b.Client_ID = c.ClientID " +
+                            "ORDER BY b.Date, b.Start_End_Time";
+
+            try (Statement stmt = connection.createStatement();
+                 ResultSet rs = stmt.executeQuery(query)) {
+
+                while (rs.next()) {
+                    int bookingId = rs.getInt("Booking_ID");
+                    String date = rs.getString("Date");
+                    String venueSpace = rs.getString("Name");
+                    String timeSlot = rs.getString("Start_End_Time");
+                    String client = rs.getString("Company_Name");
+                    String description = rs.getString("Details");
+                    boolean confirmed = rs.getBoolean("Confirmed");
+
+                    // Determine venue type (hall or room) based on room name
+                    String venueType = determineVenueType(venueSpace);
+
+                    // Calculate cost based on venue, type, timeSlot and date
+                    double cost = calculateBookingCost(venueSpace, venueType, timeSlot, date);
+
+                    // Create booking entry
+                    BookingEntry booking = new BookingEntry(date, venueSpace, venueType, timeSlot,
+                            client, description, cost);
+                    booking.setConfirmed(confirmed);
+                    booking.setBookingId(bookingId);
+
+                    // Add to the map
+                    if (!bookingsMap.containsKey(date)) {
+                        bookingsMap.put(date, new ArrayList<>());
+                    }
+                    bookingsMap.get(date).add(booking);
+                }
+
+                System.out.println("Loaded " + countAllBookings(bookingsMap) + " bookings from database");
+
+            } catch (SQLException e) {
+                System.err.println("Error executing query: " + e.getMessage());
+                e.printStackTrace();
+            }
+
+        } catch (Exception e) {
+            System.err.println("Database error: " + e.getMessage());
+            e.printStackTrace();
+        }
+
+        return bookingsMap;
+    }
+
+    private int countAllBookings(Map<String, ArrayList<BookingEntry>> bookingsMap) {
+        int count = 0;
+        for (ArrayList<BookingEntry> bookings : bookingsMap.values()) {
+            count += bookings.size();
+        }
+        return count;
+    }
 
 
     public ArrayList<ReviewPanel.Review> getAllReviews() {
